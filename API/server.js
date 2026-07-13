@@ -33,15 +33,36 @@ app.get("/servico", async (req, res) => {
 
 //Criação de um novo serviço no banco de dados
 app.post("/servico", async (req, res) => {
-  const { nome_cliente, data_inicio, data_fim, bandeira } = req.body;
+  const {
+    nome_cliente,
+    data_inicio,
+    data_fim,
+    bandeira,
+    status,
+    observacao,
+    tempo_trabalhado,
+  } = req.body;
 
-  if (!nome_cliente || !data_inicio || !data_fim || !bandeira) {
+  if (!nome_cliente || !data_inicio || !data_fim || !bandeira || !status) {
     return res.status(400).json({ error: "Todos os campos são obrigatórios." });
   }
 
   const { data, error } = await supabase
     .from("servico")
-    .insert([{ nome_cliente, data_inicio, data_fim, bandeira }])
+    .insert([
+      {
+        nome_cliente,
+        bandeira,
+        criado_em: new Date(),
+        status,
+        tempo_trabalhado,
+      },
+    ])
+    .select();
+
+  const {} = await supabase
+    .from("sessao_servico")
+    .insert([{ id_servico: data[0].id, data_inicio, data_fim }])
     .select();
 
   if (error) {
