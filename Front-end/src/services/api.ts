@@ -42,7 +42,7 @@ export const salvarServico = async (servico: ServicoPayload) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Erro no Service (salvarServico):", error);
+    console.error("Falha ao salvar o serviço:", error);
     throw error;
   }
 };

@@ -43,7 +43,6 @@ const Form: React.FC = () => {
 
     const dataFim = new Date();
 
-    // Salva os dados no banco de dados
     await salvarServico({
       nome_cliente: nomeCliente,
       data_inicio: dataInicio.toISOString(),
@@ -60,7 +59,6 @@ const Form: React.FC = () => {
     cronometroHook.finalizar();
   };
 
-  // Função auxiliar para mostrar o tempo bonito na tela (MM:SS)
   const formatarTempo = (segundos: number) => {
     const min = Math.floor(segundos / 60)
       .toString()
@@ -99,7 +97,6 @@ const Form: React.FC = () => {
           </button>
         )}
 
-        {/* CONDIÇÃO 2: Se o serviço está iniciado E o tempo está rodando */}
         {cronometroHook.iniciado && cronometroHook.rodando && (
           <button
             onClick={PausarServico}
@@ -109,11 +106,10 @@ const Form: React.FC = () => {
           </button>
         )}
 
-        {/* CONDIÇÃO 3: Se o serviço está iniciado E o tempo está pausado */}
         {cronometroHook.iniciado && !cronometroHook.rodando && (
           <>
             <button
-              onClick={ContinuarServico} // Você precisará criar esta função
+              onClick={ContinuarServico}
               style={{ background: "green", color: "white", padding: "10px" }}
             >
               Continuar Serviço
