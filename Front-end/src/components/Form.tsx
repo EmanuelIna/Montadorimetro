@@ -7,9 +7,7 @@ const Form: React.FC = () => {
   const [bandeira, setBandeira] = useState("1");
   const [dataInicio, setDataInicio] = useState<Date | null>(null);
   const [erro, setErro] = useState("");
-  const [status, setStatus] = useState<"Finalizado" | "Em andamento">(
-    "Em andamento",
-  );
+  const [status] = useState<"Finalizado" | "Em andamento">("Em andamento");
 
   // Novo estado para controlar o disable do input com base no Cronômetro
   const [isRodando, setIsRodando] = useState(false);

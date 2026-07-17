@@ -4,7 +4,7 @@ import { buscarServicos } from "../services/api";
 
 const ListaServicos: React.FC = () => {
   const [servicos, setServicos] = useState<any[]>([]);
-  const [termoBusca, setTermoBusca] = useState("");
+  // const [termoBusca, setTermoBusca] = useState(""); // Campo de busca não esta funcionando
   const [carregando, setCarregando] = useState(false);
 
   const buscarDados = async () => {
@@ -40,7 +40,8 @@ const ListaServicos: React.FC = () => {
       {carregando ? (
         <p className="text-gray-500">Carregando serviços...</p>
       ) : (
-        <div>
+        // Listagem dos serviços buscados no banco
+        <div className="flex flex-col gap-4">
           {servicos.length > 0 ? (
             servicos.map((servico: any) => (
               <ServicoCard key={servico.id} servico={servico} />

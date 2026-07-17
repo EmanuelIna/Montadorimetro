@@ -38,7 +38,10 @@ export function ServicoCard({ servico }: ServicoCardProps) {
   const EmAndamento = servico.status === "Em andamento";
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow flex justify-between items-center mb-3">
+    <button
+      className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow flex justify-between items-center mb-3"
+      onClick={() => alert(`Serviço selecionado: ${servico.nome_cliente}`)}
+    >
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold text-gray-800">
@@ -71,6 +74,6 @@ export function ServicoCard({ servico }: ServicoCardProps) {
           {servico.status}
         </span>
       </div>
-    </div>
+    </button>
   );
 }
