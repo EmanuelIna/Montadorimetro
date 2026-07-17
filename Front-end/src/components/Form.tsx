@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { salvarServico } from "../services/api";
-import { useCronometro } from "../hooks/useCronometro";
+import Cronometro from "./Cronometro"; // Ajuste o caminho do import se necessário
 
 const Form: React.FC = () => {
-  const cronometroHook = useCronometro();
-
   const [nomeCliente, setNomeCliente] = useState("");
   const [bandeira, setBandeira] = useState("1");
   const [dataInicio, setDataInicio] = useState<Date | null>(null);
@@ -13,32 +11,21 @@ const Form: React.FC = () => {
     "Em andamento",
   );
 
-  const IniciarServico = (e: React.MouseEvent) => {
-    e.preventDefault();
+  // Novo estado para controlar o disable do input com base no Cronômetro
+  const [isRodando, setIsRodando] = useState(false);
 
+  const handleIniciarServico = (): boolean => {
     if (nomeCliente.trim() === "") {
       setErro("O nome do cliente é obrigatório para iniciar.");
-      return;
+      return false; // Impede o cronômetro de rodar
     }
 
     setErro("");
     setDataInicio(new Date());
-    cronometroHook.iniciar();
+    return true; // Libera o cronômetro
   };
 
-  const PausarServico = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setStatus("Em andamento");
-    cronometroHook.pausar();
-  };
-
-  const ContinuarServico = (e: React.MouseEvent) => {
-    e.preventDefault();
-    cronometroHook.continuar();
-  };
-
-  const FinalizarServico = async (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleFinalizarServico = async () => {
     if (!dataInicio) return;
 
     const dataFim = new Date();
@@ -52,78 +39,37 @@ const Form: React.FC = () => {
       observacao: ` `,
     });
 
-    cronometroHook.finalizar();
+    // Reseta o formulário após salvar com sucesso
     setNomeCliente("");
     setBandeira("1");
     setDataInicio(null);
-    cronometroHook.finalizar();
-  };
-
-  const formatarTempo = (segundos: number) => {
-    const min = Math.floor(segundos / 60)
-      .toString()
-      .padStart(2, "0");
-    const seg = (segundos % 60).toString().padStart(2, "0");
-    return `${min}:${seg}`;
   };
 
   return (
     <form>
-      {erro && <span>{erro}</span>}
+      {erro && <span style={{ color: "red" }}>{erro}</span>}
       <input
         type="text"
         placeholder="Nome do cliente"
         value={nomeCliente}
         onChange={(e) => setNomeCliente(e.target.value)}
-        disabled={cronometroHook.rodando}
+        disabled={isRodando}
       />
+
       <div>
         <p>Selecione a Bandeira:</p>
-
         <select value={bandeira} onChange={(e) => setBandeira(e.target.value)}>
           <option value="1">Verde</option>
           <option value="2">Amarela</option>
           <option value="3">Vermelha</option>
         </select>
       </div>
-      <h2>{formatarTempo(cronometroHook.segundos)}</h2>
-      <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-        {!cronometroHook.iniciado && (
-          <button
-            onClick={IniciarServico}
-            style={{ background: "green", color: "white", padding: "10px" }}
-          >
-            Iniciar Serviço
-          </button>
-        )}
 
-        {cronometroHook.iniciado && cronometroHook.rodando && (
-          <button
-            onClick={PausarServico}
-            style={{ background: "orange", color: "white", padding: "10px" }}
-          >
-            Pausar Serviço
-          </button>
-        )}
-
-        {cronometroHook.iniciado && !cronometroHook.rodando && (
-          <>
-            <button
-              onClick={ContinuarServico}
-              style={{ background: "green", color: "white", padding: "10px" }}
-            >
-              Continuar Serviço
-            </button>
-
-            <button
-              onClick={FinalizarServico}
-              style={{ background: "blue", color: "white", padding: "10px" }}
-            >
-              Finalizar Serviço
-            </button>
-          </>
-        )}
-      </div>
+      <Cronometro
+        onStart={handleIniciarServico}
+        onFinish={handleFinalizarServico}
+        onRodandoChange={setIsRodando}
+      />
     </form>
   );
 };
